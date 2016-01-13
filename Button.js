@@ -19,7 +19,6 @@ var Button = React.createClass({
     disabled: PropTypes.bool,
     style: Text.propTypes.style,
     textStyle: Text.propTypes.style,
-    style: View.propTypes.style,
     styleDisabled: Text.propTypes.style,
   },
 
