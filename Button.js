@@ -20,6 +20,7 @@ var Button = React.createClass({
     style: Text.propTypes.style,
     textStyle: Text.propTypes.style,
     styleDisabled: Text.propTypes.style,
+    textStyleDisabled: Text.propTypes.style,
   },
 
   render() {
@@ -41,23 +42,42 @@ var Button = React.createClass({
   },
 
   _renderGroupedChildren() {
+    var children;
     var {disabled} = this.props
     var style = [
       styles.container,
-      disabled ? styles.disabledText : null,
       this.props.style,
       disabled ? this.props.styleDisabled : null,
     ];
+    var textStyle = [
+      styles.text,
+      this.props.textStyle,
+      disabled ? this.props.textStyleDisabled : null,
+    ];
 
-    var children = coalesceNonElementChildren(this.props.children, (children, index) => {
+    // Support nested text children
+    if(React.isValidElement(this.props.children) /* && React.isText(this.props.children) */)
+    {
       return (
-        <View key={index} style={style}>
-          <Text style={[styles.text, this.props.textStyle]}>
-            {children}
+        <View style={style}>
+          <Text style={textStyle}>
+            {this.props.children}
           </Text>
         </View>
       );
-    });
+    }
+    else
+    {
+      children = coalesceNonElementChildren(this.props.children, (children, index) => {
+        return (
+          <View key={index} style={style}>
+            <Text style={textStyle}>
+              {children}
+            </Text>
+          </View>
+        );
+      });
+    }
 
     switch (children.length) {
       case 0:
